@@ -22,47 +22,52 @@ form.addEventListener("submit", (e) => {
 
 // Function to add a new todo
 function addTodo(todo) {
-    let todoText = input.value.trim();
-  
-    if (todo) {
-      todoText = todo.text;
+  let todoText = input.value.trim();
+
+  if (todoText) {
+    const todoEl = document.createElement("li");
+    if (todo && todo.completed) {
+      todoEl.classList.add("completed");
     }
-  
-    if (todoText) {
-      const todoEl = document.createElement("li");
-      if (todo && todo.completed) {
-        todoEl.classList.add("completed");
-      }
-  
-      const todoTextElement = document.createElement("span");
-      todoTextElement.innerText = todoText;
-      
-      const deleteIcon = document.createElement("i");
-      deleteIcon.classList.add("fa-solid", "fa-trash");
-      
-      todoEl.appendChild(todoTextElement);
-      todoEl.appendChild(deleteIcon);
-  
-      // Toggle 'completed' class on left-click
-      todoEl.addEventListener("click", () => {
-        todoEl.classList.toggle("completed");
-        updateLS();
-      });
-  
-      // Remove todo on right-click (context menu)
-      todoEl.addEventListener("contextmenu", (e) => {
-        e.preventDefault();
-        todoEl.remove();
-        updateLS();
-      });
-  
-      todosList.appendChild(todoEl);
-  
-      input.value = "";
+
+    const todoTextElement = document.createElement("span");
+    todoTextElement.innerText = todoText;
+
+    const deleteIcon = document.createElement("i");
+    deleteIcon.classList.add("fa-solid", "fa-trash");
+
+    todoEl.appendChild(todoTextElement);
+    todoEl.appendChild(deleteIcon);
+
+    // Toggle 'completed' class on left-click
+    todoEl.addEventListener("click", () => {
+      todoEl.classList.toggle("completed");
+      // Toggle visibility of the delete icon on left-click
+      deleteIcon.style.display = todoEl.classList.contains("completed")
+        ? "none"
+        : "inline";
       updateLS();
-    }
+    });
+
+    // Remove todo when clicking on the delete icon
+    deleteIcon.addEventListener("click", () => {
+      todoEl.remove();
+      updateLS();
+    });
+
+    // Remove todo on right-click (context menu)
+    todoEl.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      todoEl.remove();
+      updateLS();
+    });
+
+    todosList.appendChild(todoEl);
+
+    input.value = "";
+    updateLS();
   }
-  
+}
 
 // Function to update localStorage with the current todo list
 function updateLS() {
